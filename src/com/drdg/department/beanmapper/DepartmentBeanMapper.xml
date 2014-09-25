@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.drdg.department.dao.DepartmentBeanMapper">
+	<resultMap id="departmentResultMap" type="com.drdg.department.bean.DepartmentBean">
+		<id column="deparment_id" property="deparmentId" jdbcType="INTEGER" />
+		<result column="deparment_name" property="deparmentName"
+			jdbcType="VARCHAR" />
+		<collection property="empList" ofType="com.drdg.emp.bean.EmpBean" column="">
+			<id column="emp_id" property="empId" jdbcType="INTEGER" />
+			<result column="fk_deparment_id" property="fkDeparmentId" jdbcType="INTEGER" />
+			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+			<result column="emp_pwd" property="empPwd" jdbcType="VARCHAR" />
+		</collection>
+	</resultMap>
+	<sql id="Base_Column_List">deparment_id, deparment_name</sql>
+
+	<!-- 多表查询 -->
+	<select id="queryByDpByName" resultMap="departmentResultMap">
+		SELECT
+		department.deparment_id as deparment_id, department.deparment_name as
+		deparment_name,
+		emp.emp_id as emp_id, emp.emp_name as emp_name,
+		emp.emp_pwd as emp_pwd, emp.fk_deparment_id
+		as fk_deparment_id FROM
+		department Inner Join emp ON emp.fk_deparment_id =
+		department.deparment_id
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="departmentResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from department
+		where deparment_id = #{deparmentId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		department
+		where deparment_id = #{deparmentId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.drdg.department.bean.DepartmentBean">
+		insert into department
+		(deparment_id, deparment_name) values
+		(#{deparmentId,jdbcType=INTEGER},
+		#{deparmentName,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.drdg.department.bean.DepartmentBean">
+		insert into department
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="deparmentId != null">deparment_id,</if>
+			<if test="deparmentName != null">deparment_name,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="deparmentId != null">#{deparmentId,jdbcType=INTEGER},
+			</if>
+			<if test="deparmentName != null">#{deparmentName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.drdg.department.bean.DepartmentBean">
+		update department
+		<set>
+			<if test="deparmentName != null">deparment_name =
+				#{deparmentName,jdbcType=VARCHAR},</if>
+		</set>
+		where deparment_id = #{deparmentId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.drdg.department.bean.DepartmentBean">
+		update department
+		set deparment_name =
+		#{deparmentName,jdbcType=VARCHAR} where
+		deparment_id
+		=
+		#{deparmentId,jdbcType=INTEGER}
+	</update>
+</mapper>

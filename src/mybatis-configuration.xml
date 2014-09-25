@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration     
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"     
+    "http://mybatis.org/dtd/mybatis-3-config.dtd"> 
+<configuration>
+	
+	<typeAliases>
+		<!--typeAliases这个属性写在最前面  -->
+		<!--给实体类起一个别名  -->
+		
+		<typeAlias type="com.drdg.emp.bean.EmpBean" alias="empBean"/>
+		<typeAlias type="com.drdg.department.bean.DepartmentBean" alias="departmentBean"/>
+	</typeAliases>
+	
+	<!--数据源配置  用mysql数据库 -->
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="jdbc" />
+			<dataSource type="POOLED">
+				<!-- 这是 JDBC 连接对象的数据源连接池的实现,用来避免创建新的连接实例 时必要的初始连接和认证时间。这是一种当前 Web 应用程序用来快速响应请求很流行的方
+					法。 -->
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://localhost:3306/mybatis" />
+				<property name="username" value="root" />
+				<property name="password" value="root" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<!--userinfoDao.xml装载进来  同等于把“dao”的实现装载进来 -->
+		<mapper resource="com/drdg/emp/beanmapper/EmpBeanMapper.xml" />
+		<mapper resource="com/drdg/department/beanmapper/DepartmentBeanMapper.xml" />
+	</mappers>
+</configuration> 

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.drdg.emp.dao.EmpBeanMapper">
+	<resultMap id="empResultMap" type="com.drdg.emp.bean.EmpBean">
+		<id column="emp_id" property="empId" jdbcType="INTEGER" />
+		<result column="fk_deparment_id" property="fkDeparmentId"
+			jdbcType="INTEGER" />
+		<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		<result column="emp_pwd" property="empPwd" jdbcType="VARCHAR" />
+
+		<association property="department"
+			javaType="com.drdg.department.bean.DepartmentBean">
+			<id column="deparment_id" property="deparmentId" jdbcType="INTEGER" />
+			<result column="deparment_name" property="deparmentName"
+				jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+
+	<!-- 多表查询 -->
+	<select id="queryByDpByName" resultMap="empResultMap">
+		SELECT
+		department.deparment_id as deparment_id, department.deparment_name as
+		deparment_name,
+		emp.emp_id as emp_id, emp.emp_name as emp_name,
+		emp.emp_pwd as emp_pwd, emp.fk_deparment_id
+		as fk_deparment_id FROM
+		department Inner Join emp ON emp.fk_deparment_id =
+		department.deparment_id
+	</select>
+
+	<sql id="Base_Column_List">emp_id, fk_deparment_id, emp_name,
+		emp_pwd</sql>
+	<select id="selectModelCount" resultType="int">select count(*) from
+		emp</select>
+	<select id="selectByPrimaryKey" resultMap="empResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from emp
+		where emp_id = #{empId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from emp
+		where emp_id = #{empId,jdbcType=INTEGER}</delete>
+	<insert id="insert" parameterType="com.drdg.emp.bean.EmpBean">
+		insert into emp (emp_id,
+		fk_deparment_id, emp_name, emp_pwd) values
+		(#{empId,jdbcType=INTEGER},
+		#{fkDeparmentId,jdbcType=INTEGER},
+		#{empName,jdbcType=VARCHAR},
+		#{empPwd,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.drdg.emp.bean.EmpBean">
+		insert into emp
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="empId != null">emp_id,</if>
+			<if test="fkDeparmentId != null">fk_deparment_id,</if>
+			<if test="empName != null">emp_name,</if>
+			<if test="empPwd != null">emp_pwd,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="empId != null">#{empId,jdbcType=INTEGER},</if>
+			<if test="fkDeparmentId != null">#{fkDeparmentId,jdbcType=INTEGER},
+			</if>
+			<if test="empName != null">#{empName,jdbcType=VARCHAR},</if>
+			<if test="empPwd != null">#{empPwd,jdbcType=VARCHAR},</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.drdg.emp.bean.EmpBean">
+		update emp
+		<set>
+			<if test="fkDeparmentId != null">fk_deparment_id =
+				#{fkDeparmentId,jdbcType=INTEGER},</if>
+			<if test="empName != null">emp_name = #{empName,jdbcType=VARCHAR},
+			</if>
+			<if test="empPwd != null">emp_pwd = #{empPwd,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where emp_id = #{empId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.drdg.emp.bean.EmpBean">
+		update emp set
+		fk_deparment_id = #{fkDeparmentId,jdbcType=INTEGER},
+		emp_name =
+		#{empName,jdbcType=VARCHAR},
+		emp_pwd =
+		#{empPwd,jdbcType=VARCHAR} where
+		emp_id = #{empId,jdbcType=INTEGER}
+	</update>
+</mapper>
